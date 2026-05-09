@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fusion-agent-config
+  namespace: oracle-fusion-agent
+data:
+  ENVIRONMENT: "production"
+  LOG_LEVEL: "INFO"
+  PLAYWRIGHT_HEADLESS: "true"
+  BROWSER_POOL_MAX_SIZE: "5"
+  CHROMADB_HOST: "chromadb-service"
+  CHROMADB_PORT: "8000"
+  GEMINI_MODEL: "gemini-2.5-pro"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: fusion-agent-secrets
+  namespace: oracle-fusion-agent
+type: Opaque
+stringData:
+  DATABASE_URL: "postgresql+asyncpg://fusion:CHANGE_ME@postgres-service:5432/fusionagent"
+  REDIS_URL: "redis://redis-service:6379/0"
+  GEMINI_API_KEY: "CHANGE_ME"
+  JWT_SECRET_KEY: "CHANGE_ME_MIN_32_CHARS"
+  INTERNAL_API_KEY: "CHANGE_ME"
+  ORACLE_FUSION_USERNAME: "CHANGE_ME"
+  ORACLE_FUSION_PASSWORD: "CHANGE_ME"
+  ORACLE_FUSION_BASE_URL: "https://CHANGE_ME.fa.us2.oraclecloud.com"

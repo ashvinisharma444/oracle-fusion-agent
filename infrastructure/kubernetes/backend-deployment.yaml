@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fusion-agent-backend
+  namespace: oracle-fusion-agent
+  labels:
+    app: fusion-agent-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: fusion-agent-backend
+  template:
+    metadata:
+      labels:
+        app: fusion-agent-backend
+    spec:
+      containers:
+      - name: backend
+        image: oracle-fusion-agent-backend:latest
+        ports:
+        - containerPort: 8000
+        envFrom:
+        - configMapRef:
+            name: fusion-agent-config
+        - secretRef:
+            name: fusion-agent-secrets
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 60
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        volumeMounts:
+        - name: screenshots
+          mountPath: /tmp/screenshots
+      volumes:
+      - name: screenshots
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fusion-agent-backend-service
+  namespace: oracle-fusion-agent
+spec:
+  selector:
+    app: fusion-agent-backend
+  ports:
+  - port: 8000
+    targetPort: 8000
+  type: ClusterIP

@@ -1,0 +1,3 @@
+﻿Vercel Frontend URL: https://frontend-i93tnahp5-ashwinis-projects-8c1b4988.vercel.app
+Backend URL: https://oracle-fusion-backend-production.up.railway.app
+Deployed: 05/10/2026 08:13:16
