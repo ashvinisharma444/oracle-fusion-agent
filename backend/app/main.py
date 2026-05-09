@@ -55,7 +55,11 @@ async def lifespan(app: FastAPI):
                     await db.commit()
                     logger.info("admin_user_seeded", email=admin_email)
                 else:
-                    logger.info("admin_user_already_exists", email=admin_email)
+                    # Always refresh the hash on startup to ensure it matches current passlib format
+                    existing.hashed_password = hash_password(admin_password)
+                    existing.is_active = True
+                    await db.commit()
+                    logger.info("admin_user_password_refreshed", email=admin_email)
     except Exception as e:
         logger.warning("admin_seed_failed", error=str(e))
 
