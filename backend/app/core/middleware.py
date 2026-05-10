@@ -15,7 +15,7 @@ from app.core.security import decode_token
 
 logger = get_logger(__name__)
 
-EXCLUDED_PATHS = {"/health", "/ready", "/metrics", "/api/v1/auth/login", "/docs", "/openapi.json"}
+EXCLUDED_PATHS = {"/health", "/ready", "/metrics", "/api/v1/health", "/api/v1/ready", "/api/v1/auth/login", "/docs", "/redoc", "/openapi.json"}
 
 
 class CorrelationIDMiddleware(BaseHTTPMiddleware):
