@@ -95,6 +95,26 @@ def create_access_token(
     return jwt.encode(payload, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
 
 
+def create_refresh_token(
+    subject: str,
+    role: Role = Role.VIEWER,
+    extra_claims: Optional[Dict[str, Any]] = None,
+) -> str:
+    now = datetime.now(timezone.utc)
+    expire = now + timedelta(days=30)
+    payload: Dict[str, Any] = {
+        "sub": subject,
+        "role": role.value,
+        "iat": now,
+        "exp": expire,
+        "jti": secrets.token_urlsafe(16),
+        "type": "refresh",
+    }
+    if extra_claims:
+        payload.update(extra_claims)
+    return jwt.encode(payload, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
+
+
 def decode_token(token: str) -> Dict[str, Any]:
     try:
         payload = jwt.decode(
